@@ -1,13 +1,13 @@
-import { configureStore, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
-const initialUiState = { isToggleCart: false };
+const initialUiState = { isShowCart: false };
 
 const uiSlice = createSlice({
   name: "ui",
   initialState: initialUiState,
   reducers: {
     toggleCart(state) {
-      state.isToggleCart = !state.isToggleCart;
+      state.isShowCart = !state.isShowCart;
     },
   },
 });

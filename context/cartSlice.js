@@ -1,6 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { toast } from "react-hot-toast";
 
-const initialCartState = { items: [], totalQuantity: 0 };
+const initialCartState = {
+  quantity: [],
+  items: [],
+  totalQuantity: 0,
+  totalPrice: 0,
+};
 
 const cartSlice = createSlice({
   name: "cart",
@@ -10,34 +16,43 @@ const cartSlice = createSlice({
       const newItem = action.payload;
       const existingItem = state.items.find((item) => item.id === newItem.id);
 
-      state.totalQuantity++;
+      state.totalPrice = state.totalPrice + newItem.price;
 
-      state.totalQuantity++;
-      if (existingItem) {
-        existingItem.quantity++;
+      if (newItem.quantity === 0 || existingItem?.quantity === 0) {
+        return;
+      }
+
+      if (existingItem && existingItem.quantity > 1) {
+        state.totalQuantity = state.totalQuantity + newItem.quantity;
         existingItem.total = existingItem.total + existingItem.price;
-      } else {
+      } else if (newItem.quantity > 0) {
+        state.totalQuantity = state.totalQuantity + newItem.quantity;
         state.items.push({
           key: newItem.id,
           id: newItem.id,
-          total: newItem.price,
+          total: newItem.price * newItem.quantity,
           title: newItem.name,
           description: newItem.desc,
           price: newItem.price,
-          quantity: 1,
+          quantity: newItem.quantity,
         });
+      }
+      if (newItem.quantity > 0) {
+        toast.success(
+          `${newItem.quantity} ${newItem.name} added to the cart! `
+        );
       }
     },
     removeFromCart(state, action) {
       const newItem = action.payload;
       const existingItem = state.items.find((item) => item.id === newItem.id);
       state.totalQuantity--;
+      state.totalPrice = state.totalPrice - existingItem.price;
 
       if (existingItem && existingItem?.quantity === 1) {
         state.items.splice(0, 1);
       }
       if (existingItem && existingItem.quantity > 1) {
-        console.log("quantity more than 1");
         existingItem.quantity--;
         existingItem.total = existingItem.total - existingItem.price;
       }

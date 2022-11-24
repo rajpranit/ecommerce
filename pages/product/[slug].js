@@ -14,8 +14,16 @@ import { client, urlFor } from "../../lib/client";
 const ProductDetails = ({ product, products }) => {
   const { image, name, details, price, _id } = product;
   const dispatch = useDispatch();
-  const cart = useSelector((state) => state.cart.items);
-  console.log(cart);
+
+  const [qty, setQty] = useState(0);
+
+  const incQuantity = () => {
+    setQty((prevstate) => prevstate + 1);
+  };
+  const decQuantity = () => {
+    if (qty === 0) return;
+    setQty((prevstate) => prevstate - 1);
+  };
 
   const [index, setIndex] = useState(0);
 
@@ -25,9 +33,11 @@ const ProductDetails = ({ product, products }) => {
         id: _id,
         price,
         name,
+        quantity: qty,
         description: details,
       })
     );
+    setQty(0);
   };
 
   const removeFromCartHandler = () => {
@@ -81,13 +91,11 @@ const ProductDetails = ({ product, products }) => {
           <div className="quantity">
             <h3>Quantity: </h3>
             <p className="quantity-desc">
-              <span className="minus" onClick={removeFromCartHandler}>
+              <span className="minus" onClick={decQuantity}>
                 <AiOutlineMinus />
               </span>
-              <span className="num">
-                {cart[0]?.quantity ? cart[0].quantity : 0}
-              </span>
-              <span className="plus" onClick={addToCartHandler}>
+              <span className="num">{qty}</span>
+              <span className="plus" onClick={incQuantity}>
                 <AiOutlinePlus />
               </span>
             </p>
