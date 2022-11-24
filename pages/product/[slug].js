@@ -1,18 +1,42 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   AiOutlineMinus,
   AiOutlinePlus,
   AiFillStar,
   AiOutlineStar,
 } from "react-icons/ai";
-import { Product } from "../../components";
 
+import { Product } from "../../components";
+import { cartActions } from "../../context/cartSlice";
 import { client, urlFor } from "../../lib/client";
 
 const ProductDetails = ({ product, products }) => {
-  const { image, name, details, price } = product;
+  const { image, name, details, price, _id } = product;
+  const dispatch = useDispatch();
+  const cart = useSelector((state) => state.cart.items);
+  console.log(cart);
 
   const [index, setIndex] = useState(0);
+
+  const addToCartHandler = () => {
+    dispatch(
+      cartActions.addToCart({
+        id: _id,
+        price,
+        name,
+        description: details,
+      })
+    );
+  };
+
+  const removeFromCartHandler = () => {
+    dispatch(
+      cartActions.removeFromCart({
+        id: _id,
+      })
+    );
+  };
 
   return (
     <div>
@@ -29,6 +53,7 @@ const ProductDetails = ({ product, products }) => {
             {image &&
               image?.map((item, i) => (
                 <img
+                  key={image._id}
                   src={urlFor(item)}
                   className={
                     i === index ? "small-image selected-image" : "small-image"
@@ -56,19 +81,23 @@ const ProductDetails = ({ product, products }) => {
           <div className="quantity">
             <h3>Quantity: </h3>
             <p className="quantity-desc">
-              <span className="minus" onClick="">
+              <span className="minus" onClick={removeFromCartHandler}>
                 <AiOutlineMinus />
               </span>
-              <span className="num" onClick="">
-                0
+              <span className="num">
+                {cart[0]?.quantity ? cart[0].quantity : 0}
               </span>
-              <span className="plus" onClick="">
+              <span className="plus" onClick={addToCartHandler}>
                 <AiOutlinePlus />
               </span>
             </p>
           </div>
           <div className="buttons">
-            <button type="button" className="add-to-cart" onClick="">
+            <button
+              type="button"
+              className="add-to-cart"
+              onClick={addToCartHandler}
+            >
               Add to cart
             </button>
             <button type="button" className="buy-now" onClick="">

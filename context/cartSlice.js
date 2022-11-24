@@ -11,6 +11,8 @@ const cartSlice = createSlice({
       const existingItem = state.items.find((item) => item.id === newItem.id);
 
       state.totalQuantity++;
+
+      state.totalQuantity++;
       if (existingItem) {
         existingItem.quantity++;
         existingItem.total = existingItem.total + existingItem.price;
@@ -24,6 +26,20 @@ const cartSlice = createSlice({
           price: newItem.price,
           quantity: 1,
         });
+      }
+    },
+    removeFromCart(state, action) {
+      const newItem = action.payload;
+      const existingItem = state.items.find((item) => item.id === newItem.id);
+      state.totalQuantity--;
+
+      if (existingItem && existingItem?.quantity === 1) {
+        state.items.splice(0, 1);
+      }
+      if (existingItem && existingItem.quantity > 1) {
+        console.log("quantity more than 1");
+        existingItem.quantity--;
+        existingItem.total = existingItem.total - existingItem.price;
       }
     },
   },

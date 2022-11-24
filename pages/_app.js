@@ -1,5 +1,5 @@
 import React from "react";
-import { Provider } from "react";
+import { Provider } from "react-redux";
 
 import "../styles/globals.css";
 
@@ -12,6 +12,7 @@ function MyApp({ Component, pageProps }) {
       <Layout>
         <Component {...pageProps} />
       </Layout>
+      //{" "}
     </Provider>
   );
 }
