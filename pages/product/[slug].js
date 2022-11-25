@@ -35,6 +35,7 @@ const ProductDetails = ({ product, products }) => {
         name,
         quantity: qty,
         description: details,
+        image,
       })
     );
     setQty(0);
