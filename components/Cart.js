@@ -18,6 +18,7 @@ const Cart = () => {
   const totalQuantity = useSelector((state) => state.cart.totalQuantity);
   const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
+  const subTotal = useSelector((state) => state.cart.totalPrice);
 
   const togglecart = () => {
     dispatch(uiActions.toggleCart());
@@ -59,7 +60,7 @@ const Cart = () => {
                     <h5>{item.title}</h5>
                     <h4>${item.total}</h4>
                   </div>
-                  <div className="flex botton">
+                  <div className="flex bottom">
                     <div>
                       <p className="quantity-desc">
                         <span
@@ -77,9 +78,8 @@ const Cart = () => {
                           className="plus"
                           onClick={() => {
                             dispatch(
-                              cartActions.addToCart({
+                              cartActions.increaseCart({
                                 id: item.id,
-                                addFromCart: true,
                               })
                             );
                           }}
@@ -102,6 +102,19 @@ const Cart = () => {
               </div>
             ))}
         </div>
+        {cartItems.length >= 1 && (
+          <div className="cart-bottom">
+            <div className="total">
+              <h3>Subtotal:</h3>
+              <h3>${subTotal}</h3>
+            </div>
+            <div className="btn-container">
+              <button type="button" className="btn" onClick={null}>
+                Pay With Stripe
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

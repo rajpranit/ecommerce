@@ -31,6 +31,7 @@ const ProductDetails = ({ product, products }) => {
     dispatch(
       cartActions.addToCart({
         id: _id,
+        addedFromSlug: true,
         price,
         name,
         quantity: qty,

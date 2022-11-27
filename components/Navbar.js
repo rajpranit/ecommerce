@@ -11,7 +11,6 @@ const Navbar = () => {
 
   const showCart = useSelector((state) => state.ui.isShowCart);
 
-  console.log(showCart);
   const totalQuantity = useSelector((state) => state.cart.totalQuantity);
 
   return (
