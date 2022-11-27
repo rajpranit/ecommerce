@@ -27,23 +27,18 @@ const cartSlice = createSlice({
       const newItem = action.payload;
       const existingItem = state.items.find((item) => item.id === newItem.id);
 
-      if (newItem.quantity === 0 || existingItem?.quantity === 0) {
-        return;
-      }
+      state.totalQuantity = state.totalQuantity + newItem.quantity;
+      state.totalPrice = state.totalPrice + newItem.price * newItem.quantity;
 
-      if (existingItem && existingItem.quantity > 1) {
+      if (existingItem?.quantity >= 1) {
         console.log("added from slug again");
 
         existingItem.quantity = existingItem.quantity + newItem.quantity;
         existingItem.total =
           existingItem.total + existingItem.price * newItem.quantity;
-
-        state.totalQuantity = state.totalQuantity + newItem.quantity;
-        state.totalPrice = state.totalPrice + newItem.price * newItem.quantity;
-      } else if (newItem.quantity > 0 && !existingItem) {
-        state.totalPrice = state.totalPrice + newItem.price * newItem.quantity;
+      } else if (newItem.quantity) {
         console.log("added form slug");
-        state.totalQuantity = state.totalQuantity + newItem.quantity;
+
         state.items.push({
           key: newItem.id,
           id: newItem.id,
@@ -55,7 +50,7 @@ const cartSlice = createSlice({
           quantity: newItem.quantity,
         });
       }
-      if (newItem.quantity > 0) {
+      if (newItem.quantity) {
         toast.success(
           `${newItem.quantity} ${newItem.name} added to the cart! `
         );
