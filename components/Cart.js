@@ -13,12 +13,42 @@ import { uiActions } from "../context/uiSlice";
 
 import { urlFor } from "../lib/client";
 import { useSelector, useDispatch } from "react-redux";
+import getStripe from "../lib/getStripe";
 
 const Cart = () => {
   const totalQuantity = useSelector((state) => state.cart.totalQuantity);
   const cartItems = useSelector((state) => state.cart.items);
+  console.log(cartItems);
+
+  const image = cartItems[0]?.image[0].asset._ref;
+  if (image?.includes("webp")) {
+    console.log(image);
+  } else {
+    console.log("false");
+  }
   const dispatch = useDispatch();
   const subTotal = useSelector((state) => state.cart.totalPrice);
+
+  const handleCheckout = async () => {
+    const stripe = await getStripe();
+
+    const response = await fetch("/api/stripe", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(cartItems),
+    });
+
+    if (!response.ok) {
+      return;
+    }
+
+    const data = await response.json();
+    toast.loading("Redirecting...");
+
+    stripe.redirectToCheckout({ sessionId: data.id });
+  };
 
   const togglecart = () => {
     dispatch(uiActions.toggleCart());
@@ -109,7 +139,7 @@ const Cart = () => {
               <h3>${subTotal}</h3>
             </div>
             <div className="btn-container">
-              <button type="button" className="btn" onClick={null}>
+              <button type="button" className="btn" onClick={handleCheckout}>
                 Pay With Stripe
               </button>
             </div>

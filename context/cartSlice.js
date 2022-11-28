@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-hot-toast";
 
 const initialCartState = {
-  quantity: [],
   items: [],
   totalQuantity: 0,
   totalPrice: 0,
@@ -79,6 +78,11 @@ const cartSlice = createSlice({
       state.totalQuantity = state.totalQuantity - existingItem?.quantity;
 
       state.items.splice(existingItemIndex, 1);
+    },
+    onSuccess(state, action) {
+      state.items = [];
+      state.totalQuantity = 0;
+      state.totalPrice = 0;
     },
   },
 });
