@@ -9,7 +9,9 @@ import {
 
 import { Product } from "../../components";
 import { cartActions } from "../../context/cartSlice";
+import { uiActions } from "../../context/uiSlice";
 import { client, urlFor } from "../../lib/client";
+import getStripe from "../../lib/getStripe";
 
 const ProductDetails = ({ product, products }) => {
   const { image, name, details, price, _id } = product;
@@ -42,6 +44,19 @@ const ProductDetails = ({ product, products }) => {
     setQty(0);
   };
 
+  const handleBuyNow = async () => {
+    dispatch(
+      cartActions.addToCart({
+        id: _id,
+        quantity: qty,
+        image: image,
+        price: price,
+        description: details,
+      })
+    );
+    dispatch(uiActions.toggleCart());
+  };
+
   const removeFromCartHandler = () => {
     dispatch(
       cartActions.removeFromCart({
@@ -65,7 +80,7 @@ const ProductDetails = ({ product, products }) => {
             {image &&
               image?.map((item, i) => (
                 <img
-                  key={image._id}
+                  key={i}
                   src={urlFor(item)}
                   className={
                     i === index ? "small-image selected-image" : "small-image"
@@ -110,7 +125,7 @@ const ProductDetails = ({ product, products }) => {
             >
               Add to cart
             </button>
-            <button type="button" className="buy-now" onClick="">
+            <button type="button" className="buy-now" onClick={handleBuyNow}>
               Buy Now
             </button>
           </div>
